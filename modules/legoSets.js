@@ -1,15 +1,15 @@
 
 /********************************************************************************
-*  WEB700 – Assignment 03
+*  WEB700 – Assignment 04
 * 
 *  I declare that this assignment is my own work in accordance with Seneca's
 *  Academic Integrity Policy:
 * 
 *  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
 * 
-*  Name: Tien Dung Van Student ID: 140342247 Date: 6/10/2025
+*  Name: Tien Dung Van Student ID: 140342247 Date: 30/10/2025
 *
-*  Published URL: ___________________________________________________________
+*  Published URL: https://web-700-assignment-8und.vercel.app/
 *
 ********************************************************************************/
 
@@ -67,6 +67,19 @@ class LegoData {
                 resolve(foundSets);
             } else {
                 reject("unable to find requested sets");
+            }
+        });
+    }
+
+    
+    addSet(newSet) {
+        return new Promise((resolve, reject) => {
+            const exists = this.sets.find(s => s.set_num === newSet.set_num);
+            if (exists) {
+                reject("Set already exists");
+            } else {
+                this.sets.push(newSet);
+                resolve(newSet);
             }
         });
     }

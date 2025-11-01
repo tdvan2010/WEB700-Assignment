@@ -7,7 +7,7 @@
 * 
 *  Name: Tien Dung Van   Student ID: 140342247   Date: October 6, 2025
 *
-*  Published URL: (fill in your Vercel link after deployment)
+*  Published URL: https://web-700-assignment-8und.vercel.app/
 *
 ********************************************************************************/
 
@@ -19,6 +19,9 @@ const HTTP_PORT = process.env.PORT || 8080;
 // 1) Import the legoSets module and create an instance
 const LegoData = require("./modules/legoSets");
 const legoData = new LegoData();
+
+// Serve static files from the "public" folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 2) Static routes
 app.get("/", (req, res) => {
@@ -44,6 +47,22 @@ app.get("/lego/sets/:set_num", (req, res) => {
     .then(set => res.json(set))
     .catch(err => res.status(404).json({ message: err }));
 });
+
+app.get("/lego/add-test", (req, res) => {
+  const testSet = {
+    set_num: "123",
+    name: "Test Set",
+    year: "2024",
+    theme_id: "366",
+    num_parts: "120",
+    img_url: "https://fakeimg.pl/375x375?text=[+Lego+]"
+  };
+
+  legoData.addSet(testSet)
+    .then(() => res.redirect("/lego/sets"))
+    .catch(err => res.status(422).json({ message: err }));
+});
+
 
 // 5) Custom 404: send the 404.html file
 app.use((req, res) => {

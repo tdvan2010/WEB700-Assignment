@@ -1,0 +1,144 @@
+/* public/css/theme.css */
+
+/* Google font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root{
+  --primary-1: #3b82f6; /* blue */
+  --primary-2: #8b5cf6; /* purple */
+  --accent: #ffdd57; /* yellow accent */
+  --text-light: #ffffff;
+  --muted: rgba(255,255,255,0.8);
+}
+
+/* Global */
+html, body {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+/* Container background override for light sections */
+.bg-light-custom {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  color: var(--text-light);
+}
+
+/* Navbar */
+.navbar {
+  background: rgba(0,0,0,0.15) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--text-light) !important;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+}
+
+.nav-link {
+  color: var(--muted) !important;
+  transition: color .2s ease, transform .15s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent) !important;
+  transform: translateY(-2px);
+}
+
+/* Hero */
+.display-5 {
+  color: var(--text-light);
+  text-shadow: 1px 2px 6px rgba(0,0,0,0.5);
+}
+
+/* Headings */
+h1,h2,h3,h4,h5,h6 {
+  color: var(--text-light);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.45);
+}
+
+/* Links */
+a {
+  color: var(--accent);
+}
+a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Tables */
+.table {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-light);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table thead th {
+  border-bottom: 2px solid rgba(255,255,255,0.08);
+  color: var(--text-light);
+  font-weight: 600;
+}
+.table tbody tr td {
+  padding: 0.75rem 1rem;
+}
+.table tbody tr:nth-child(odd) td {
+  background: rgba(255,255,255,0.03);
+}
+
+/* Lists */
+ul, ol {
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+/* Audio / Video container spacing */
+audio, video {
+  display: block;
+  margin: 0.5rem 0 1rem;
+  max-width: 100%;
+}
+
+/* Utilities */
+.btn-theme {
+  background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+.btn-theme:hover {
+  filter: brightness(1.05);
+}
+
+/* Footer or 404 page */
+.footer {
+  padding: 2rem 0;
+  text-align: center;
+  color: rgba(255,255,255,0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .display-5 { font-size: 1.6rem; }
+  .container { padding-left: 1rem; padding-right: 1rem; }
+}
