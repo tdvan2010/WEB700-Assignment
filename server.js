@@ -7,7 +7,7 @@
 * 
 *  Name: Tien Dung Van   Student ID: 140342247   Date: October 6, 2025
 *
-*  Published URL: https://web-700-assignment-8und.vercel.app/
+*  Published URL: https://web-700-assignment-t4us.vercel.app/about
 *
 ********************************************************************************/
 
