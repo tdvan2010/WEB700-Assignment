@@ -28,11 +28,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 // 2) Static routes
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/home.html"));
+  res.render("home", { page: "/" });
 });
 
 app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/about.html"));
+  res.render("about", { page: "/about" });
 });
 
 // 3) Data route: /lego/sets (optionally filtered by ?theme=...)
@@ -69,7 +69,7 @@ app.get("/lego/add-test", (req, res) => {
 
 // 5) Custom 404: send the 404.html file
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "views/404.html"));
+  res.status(404).render("404", { page: "" });
 });
 
 // 6) Only start the server after initialize() completes successfully
