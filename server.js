@@ -1,5 +1,5 @@
 /********************************************************************************
-*  WEB700 – Assignment 03
+*  WEB700 – Assignment 05
 * 
 *  I declare that this assignment is my own work in accordance with Seneca's
 *  Academic Integrity Policy:
@@ -16,13 +16,16 @@ const path = require("path");
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
 
+app.set("view engine", "ejs");                
+app.set("views", __dirname + "/views");
+
 // 1) Import the legoSets module and create an instance
 const LegoData = require("./modules/legoSets");
 const legoData = new LegoData();
 
 // Serve static files from the "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.urlencoded({ extended: true }));
 // 2) Static routes
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views/home.html"));
