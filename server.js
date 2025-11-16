@@ -40,36 +40,52 @@ app.get("/lego/sets", (req, res) => {
   const { theme } = req.query;
   const p = theme ? legoData.getSetsByTheme(theme) : legoData.getAllSets();
 
-  p.then(data => res.json(data))
+  p.then(data => res.render("sets", { sets: data, page: "/lego/sets" }))
    .catch(err => res.status(404).json({ message: err }));
+
 });
 
 // 4) Data route: /lego/sets/:set_num (get a single set by set_num)
 app.get("/lego/sets/:set_num", (req, res) => {
   legoData.getSetByNum(req.params.set_num)
-    .then(set => res.json(set))
+    .then(set => res.render("set", { set: set, page: "" }))
     .catch(err => res.status(404).json({ message: err }));
 });
 
-app.get("/lego/add-test", (req, res) => {
-  const testSet = {
-    set_num: "123",
-    name: "Test Set",
-    year: "2024",
-    theme_id: "366",
-    num_parts: "120",
-    img_url: "https://fakeimg.pl/375x375?text=[+Lego+]"
-  };
+app.get("/lego/addSet", async (req, res) => {
+  try {
+    const themes = await legoData.getAllThemes();
+    res.render("addSet", { themes: themes, page: "/lego/addSet" });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
-  legoData.addSet(testSet)
-    .then(() => res.redirect("/lego/sets"))
-    .catch(err => res.status(422).json({ message: err }));
+app.post("/lego/addSet", async (req, res) => {
+  try {
+    const foundTheme = await legoData.getThemeById(req.body.theme_id);
+    req.body.theme = foundTheme.name;       // gán tên theme vào set mới
+
+    await legoData.addSet(req.body);
+    res.redirect("/lego/sets");
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get("/lego/deleteSet/:set_num", async (req, res) => {
+  try {
+    await legoData.deleteSetByNum(req.params.set_num);
+    res.redirect("/lego/sets");
+  } catch (err) {
+    res.status(404).send(err);
+  }
 });
 
 
 // 5) Custom 404: send the 404.html file
 app.use((req, res) => {
-  res.status(404).render("404", { page: "" });
+  res.status(404).sendFile(path.join(__dirname, "views/404.html"));
 });
 
 // 6) Only start the server after initialize() completes successfully
