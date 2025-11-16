@@ -1,19 +1,3 @@
-
-/********************************************************************************
-*  WEB700 – Assignment 05
-* 
-*  I declare that this assignment is my own work in accordance with Seneca's
-*  Academic Integrity Policy:
-* 
-*  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
-* 
-*  Name: Tien Dung Van Student ID: 140342247 Date: 30/10/2025
-*
-*  Published URL: https://web-700-assignment-8und.vercel.app/
-*
-********************************************************************************/
-
-
 class LegoData {
     constructor() {
         this.sets = [];
@@ -28,66 +12,49 @@ class LegoData {
 
                 this.themes = [...themeData];
 
-                setData.forEach(set => {
-                    const themeObj = themeData.find(theme => theme.id == set.theme_id);
-                    const themeName = themeObj ? themeObj.name : "Unknown";
-                    const newSet = { ...set, theme: themeName };
-                    this.sets.push(newSet);
+                this.sets = setData.map(set => {
+                    const theme = themeData.find(t => t.id == set.theme_id);
+                    return { ...set, theme: theme ? theme.name : "Unknown" };
                 });
 
                 resolve();
             } catch (err) {
-                reject("Error initializing data: " + err.message);
+                reject("Error initializing data: " + err);
             }
         });
     }
 
-    getAllSets() {
-        return new Promise((resolve, reject) => {
-            this.sets.length > 0 ? resolve(this.sets) : reject("No sets available");
-        });
-    }
+    getAllSets() { return Promise.resolve(this.sets); }
 
-    getAllThemes() {
-        return new Promise((resolve, reject) => {
-            this.themes.length > 0 ? resolve(this.themes) : reject("no themes available");
-        });
-    }
+    getAllThemes() { return Promise.resolve(this.themes); }
 
-    getSetByNum(setNum) {
+    getSetByNum(num) {
         return new Promise((resolve, reject) => {
-            const foundSet = this.sets.find(set => set.set_num === setNum);
-            foundSet ? resolve(foundSet) : reject("unable to find requested set");
-        });
-    }
-
-    getThemeById(id) {
-        return new Promise((resolve, reject) => {
-            const theme = this.themes.find(t => t.id == id);
-            theme ? resolve(theme) : reject("unable to find requested theme");
+            const set = this.sets.find(s => s.set_num === num);
+            set ? resolve(set) : reject("Set not found");
         });
     }
 
     getSetsByTheme(theme) {
         return new Promise((resolve, reject) => {
-            const lowerTheme = theme.toLowerCase();
-            const foundSets = this.sets.filter(set => set.theme.toLowerCase().includes(lowerTheme));
-            foundSets.length > 0 ? resolve(foundSets) : reject("unable to find requested sets");
+            const result = this.sets.filter(s =>
+                s.theme.toLowerCase().includes(theme.toLowerCase())
+            );
+            result.length > 0 ? resolve(result) : reject("No matching sets");
         });
     }
 
     addSet(newSet) {
         return new Promise((resolve, reject) => {
-            const exists = this.sets.find(s => s.set_num === newSet.set_num);
+            const exists = this.sets.some(s => s.set_num === newSet.set_num);
             exists ? reject("Set already exists") : resolve(this.sets.push(newSet));
         });
     }
 
-    // ✅ Sửa đúng — function nằm trong class
     deleteSetByNum(setNum) {
         return new Promise((resolve, reject) => {
             const index = this.sets.findIndex(s => s.set_num == setNum);
-            index !== -1 ? resolve(this.sets.splice(index, 1)) : reject("set not found");
+            index !== -1 ? resolve(this.sets.splice(index, 1)) : reject("Set not found");
         });
     }
 }
