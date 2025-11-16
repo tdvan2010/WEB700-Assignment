@@ -1,6 +1,6 @@
 
 /********************************************************************************
-*  WEB700 – Assignment 04
+*  WEB700 – Assignment 05
 * 
 *  I declare that this assignment is my own work in accordance with Seneca's
 *  Academic Integrity Policy:
@@ -17,6 +17,7 @@
 class LegoData {
     constructor() {
         this.sets = [];
+        this.themes = [];
     }
 
     initialize() {
