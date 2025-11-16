@@ -13,90 +13,55 @@
 
 const express = require("express");
 const path = require("path");
-const app = express();
-const HTTP_PORT = process.env.PORT || 8080;
-
-app.set("view engine", "ejs");                
-app.set("views", __dirname + "/views");
-
-// 1) Import the legoSets module and create an instance
 const LegoData = require("./modules/legoSets");
+
+const app = express();
 const legoData = new LegoData();
 
-// Serve static files from the "public" folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 app.use(express.urlencoded({ extended: true }));
-// 2) Static routes
+app.use(express.static("public"));
+
 app.get("/", (req, res) => {
-  res.render("home", { page: "/" });
+    res.render("home");
 });
 
 app.get("/about", (req, res) => {
-  res.render("about", { page: "/about" });
+    res.render("about");
 });
 
-// 3) Data route: /lego/sets (optionally filtered by ?theme=...)
-app.get("/lego/sets", (req, res) => {
-  const { theme } = req.query;
-  const p = theme ? legoData.getSetsByTheme(theme) : legoData.getAllSets();
+app.get("/lego/sets", async (req, res) => {
+    try {
+        const theme = req.query.theme;
+        const sets = theme
+            ? await legoData.getSetsByTheme(theme)
+            : await legoData.getAllSets();
 
-  p.then(data => res.render("sets", { sets: data, page: "/lego/sets" }))
-   .catch(err => res.status(404).json({ message: err }));
-
+        res.render("sets", { sets });
+    } catch (err) {
+        res.status(500).send("Internal Server Error");
+    }
 });
 
-// 4) Data route: /lego/sets/:set_num (get a single set by set_num)
-app.get("/lego/sets/:set_num", (req, res) => {
-  legoData.getSetByNum(req.params.set_num)
-    .then(set => res.render("set", { set: set, page: "" }))
-    .catch(err => res.status(404).json({ message: err }));
+app.get("/lego/sets/:id", async (req, res) => {
+    try {
+        const set = await legoData.getSetByNum(req.params.id);
+        res.render("set", { set });
+    } catch (err) {
+        res.status(404).send("Set not found");
+    }
 });
 
-app.get("/lego/addSet", async (req, res) => {
-  try {
-    const themes = await legoData.getAllThemes();
-    res.render("addSet", { themes: themes, page: "/lego/addSet" });
-  } catch (err) {
-    res.status(500).send(err);
-  }
+app.get("/lego/themes", async (req, res) => {
+    try {
+        const themes = await legoData.getAllThemes();
+        res.render("themes", { themes });
+    } catch (err) {
+        res.status(500).send("Internal Server Error");
+    }
 });
 
-app.post("/lego/addSet", async (req, res) => {
-  try {
-    const foundTheme = await legoData.getThemeById(req.body.theme_id);
-    req.body.theme = foundTheme.name;       // gán tên theme vào set mới
-
-    await legoData.addSet(req.body);
-    res.redirect("/lego/sets");
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-app.get("/lego/deleteSet/:set_num", async (req, res) => {
-  try {
-    await legoData.deleteSetByNum(req.params.set_num);
-    res.redirect("/lego/sets");
-  } catch (err) {
-    res.status(404).send(err);
-  }
-});
-
-
-// 5) Custom 404: send the 404.html file
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "views/404.html"));
-});
-
-// 6) Only start the server after initialize() completes successfully
-legoData.initialize()
-  .then(() => {
-    app.listen(HTTP_PORT, () => {
-      console.log(`Server listening on: ${HTTP_PORT}`);
-    });
-  })
-  .catch(err => {
-    console.log(`Failed to start server: ${err}`);
-  });
- 
+// ❗ MUST HAVE: Vercel serverless trả về app
 module.exports = app;
